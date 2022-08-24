@@ -5,7 +5,7 @@ MAINTAINER Demo example@demo.com
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN yum update -y
-RUN yum install -y http # install Apache web server (Only ‘yes’)
+RUN yum install -y httpd # install Apache web server (Only ‘yes’)
 
 EXPOSE 80
 
