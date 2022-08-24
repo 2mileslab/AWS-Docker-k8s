@@ -1,15 +1,11 @@
-FROM ubuntu:18.04
+FROM Centos7
 MAINTAINER Demo example@demo.com
 
 # Avoiding user interaction
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -y
-RUN apt-get install -y apache2 # install Apache web server (Only ‘yes’)
-RUN apt-get install -y software-properties-common # php 5.6(이전버전) 설치를 위해
-RUN add-apt-repository ppa:ondrej/php # For Installing PHP 5.6
-RUN apt-get update -y
-RUN apt-get install -y php5.6
+RUN yum update -y
+RUN yum install -y http # install Apache web server (Only ‘yes’)
 
 EXPOSE 80
 
