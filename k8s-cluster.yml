@@ -10,7 +10,7 @@ vpc:
   cidr: "172.31.0.0/16"       # (optional, must match CIDR used by the given VPC)
   subnets:
     # must provide 'private' and/or 'public' subnets by availability zone as shown
-    private:
+    public:
       ap-southeast-1c:
         id: "subnet-082672b38a831e400"
         cidr: "172.31.0.0/20" # (optional, must match CIDR used by the given subnet)
