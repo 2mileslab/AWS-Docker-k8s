@@ -1,0 +1,75 @@
+참고 자료 https://faun.pub/pod-and-persistent-volume-with-existing-ebs-in-eks-f09c2afc9b24 
+
+
+<storageclass.yml 파일>
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: standard
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+mountOptions:
+  - debug
+volumeBindingMode: Immediate
+
+
+<pv.yml 파일>
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  awsElasticBlockStore:
+    fsType: xfs
+    volumeID: aws://us-east-1a/vol-0fbe3da42db1d00ae
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: gp2-retain
+  volumeMode: Filesystem
+
+
+
+
+<pvc.yml 파일>
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: pod1
+  name: pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: gp2-retain
+  volumeMode: Filesystem
+  volumeName: pv
+
+
+
+<pod.yml 파일>
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  volumes:               ##「표5 Volume v1 core」참고
+  - name: pvc
+    persistentVolumeClaim:
+      claimName: pvc   ## <-- PVC의 이름 설정
+  containers:
+  - name: ubuntu
+    image: ubuntu:16.04
+    volumeMounts:        ## 「표6 VolumeMount v1 core」참고
+    - name: pvc
+      mountPath: /mnt    ## <-- 컨테이너 상 마운트 경로
+    command: ["/usr/bin/tail","-f","/dev/null"]      
